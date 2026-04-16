@@ -4,13 +4,11 @@
 set -euo pipefail
 set +m  # 规避 Hermes #8340 terminal hang
 
-# 加载 shell 环境（含 HTTPS_PROXY 等；bash -l 和 cron 都不会自动 source .bashrc）
-# 在墙内机器（如 spark）需要这个走代理访问 HF / arxiv
+# 加载 proxy 环境变量（spark 等墙内机器需要走代理访问 HF/arxiv）
+# 注意：直接 source .bashrc 通常会被 [ -z "$PS1" ] && return 短路退出，
+# 所以用 grep+eval 精确提取 export 行，绕过 interactive 检查
 if [[ -f ~/.bashrc ]]; then
-  set +eu
-  # shellcheck disable=SC1090
-  source ~/.bashrc 2>/dev/null || true
-  set -eu
+  eval "$(grep -E '^[[:space:]]*export[[:space:]]+(HTTPS?_PROXY|NO_PROXY|HF_ENDPOINT)=' ~/.bashrc 2>/dev/null || true)"
 fi
 
 WORK_DIR="$(cd "$(dirname "$0")/.." && pwd)"
