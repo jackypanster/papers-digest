@@ -1,0 +1,9 @@
+# 运行时产物
+abstracts/
+drafts/
+rejected/
+.logs/
+
+# raw hermes outputs
+*.raw.yaml
+*.raw.md

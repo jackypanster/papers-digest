@@ -1,0 +1,10 @@
+local LLM (本地大模型推理), Apple Silicon / Mac inference, MoE architecture, fine-tuning (LoRA, QLoRA, Unsloth), inference optimization (vLLM, llama.cpp, quantization)
+agent (LLM agent, autonomous agent, multi-agent), tool use, function calling, agent orchestration, code agent
+RAG, retrieval, vector DB, embedding, hybrid search
+prompt engineering, prompt optimization, in-context learning
+code generation, code review automation, programming agents
+context engineering, long context, memory, knowledge management
+benchmark, evaluation methodology, LLM-as-judge
+Anthropic / OpenAI / Google AI / NVIDIA / Meta / Mistral / Qwen / Gemma / Claude / GPT
+arxiv newcomers from Chinese labs (Tsinghua, Peking, Fudan, Shanghai AI Lab, etc.)
+NOT-INTERESTED: pure theoretical NLP without practical impact, image-only generation (no agent/code aspect), pure RL theory
