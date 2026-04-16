@@ -75,12 +75,18 @@ hermes chat -Q --yolo --max-turns 1 -q "$(cat "$TMPFILE")" > "$OUT_RAW" 2>&1 || 
   exit 2
 }
 
-# 清洗：去 banner box / session_id / END marker / Gemma4 偶尔加的 markdown 代码块
+# 清洗：去 banner box / session_id / END marker / markdown 包装 / 复读
+# 复读检测：YAML 里 arxiv_id 应该只出现一次，第二次出现 = Gemma4 复读了，exit
 awk '
+  BEGIN { arxiv_count = 0 }
   /^╭/ || /^╰/ { next }
   /^[[:space:]]*session_id:/ { exit }
   /<<END_OF_DIGEST>>/ { exit }
   /^[[:space:]]*```/ { next }
+  /^arxiv_id:/ {
+    arxiv_count++
+    if (arxiv_count == 2) exit
+  }
   { print }
 ' "$OUT_RAW" > "$OUT"
 
