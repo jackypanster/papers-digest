@@ -4,6 +4,15 @@
 set -euo pipefail
 set +m  # 规避 Hermes #8340 terminal hang
 
+# 加载 shell 环境（含 HTTPS_PROXY 等；bash -l 和 cron 都不会自动 source .bashrc）
+# 在墙内机器（如 spark）需要这个走代理访问 HF / arxiv
+if [[ -f ~/.bashrc ]]; then
+  set +eu
+  # shellcheck disable=SC1090
+  source ~/.bashrc 2>/dev/null || true
+  set -eu
+fi
+
 WORK_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$WORK_DIR"
 
