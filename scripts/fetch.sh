@@ -13,7 +13,8 @@ if [[ "${HTTPS_PROXY:-}" == socks* ]]; then
   PROXY_ARG=(--socks5-hostname "${P%%/*}")
 fi
 
-XML="$(curl "${PROXY_ARG[@]}" -sS --max-time 20 "$URL")"
+# 兼容 macOS bash 3.2（同 pick.sh）
+XML="$(curl ${PROXY_ARG[@]+"${PROXY_ARG[@]}"} -sS --max-time 20 "$URL")"
 [[ -z "$XML" ]] && { echo "ERROR: empty arxiv response for $ID" >&2; exit 1; }
 
 # 必须 https，http 端点偶发 hang

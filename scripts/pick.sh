@@ -12,7 +12,8 @@ if [[ "${HTTPS_PROXY:-}" == socks* ]]; then
   PROXY_ARG=(--socks5-hostname "${P%%/*}")
 fi
 
-HTML="$(curl "${PROXY_ARG[@]}" -sS --max-time 30 -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' "$URL")"
+# 兼容 macOS bash 3.2 (set -u + 空数组报 unbound) 的标准 idiom
+HTML="$(curl ${PROXY_ARG[@]+"${PROXY_ARG[@]}"} -sS --max-time 30 -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' "$URL")"
 
 if [[ -z "$HTML" ]]; then
   echo "ERROR: empty response from $URL" >&2
