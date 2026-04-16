@@ -4,7 +4,15 @@
 set -euo pipefail
 
 URL="https://huggingface.co/papers"
-HTML="$(curl -sS --max-time 30 -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' "$URL")"
+
+# 自动从 HTTPS_PROXY 推导 curl 代理参数（socks5 需 --socks5-hostname，http(s) 走默认）
+PROXY_ARG=()
+if [[ "${HTTPS_PROXY:-}" == socks* ]]; then
+  P="${HTTPS_PROXY#*://}"
+  PROXY_ARG=(--socks5-hostname "${P%%/*}")
+fi
+
+HTML="$(curl "${PROXY_ARG[@]}" -sS --max-time 30 -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' "$URL")"
 
 if [[ -z "$HTML" ]]; then
   echo "ERROR: empty response from $URL" >&2
