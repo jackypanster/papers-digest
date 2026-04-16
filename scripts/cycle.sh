@@ -4,6 +4,9 @@
 set -euo pipefail
 set +m  # 规避 Hermes #8340 terminal hang
 
+# 确保用户工具 PATH（hermes 在 ~/.local/bin，cron / non-login shell 默认拿不到）
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH:-}"
+
 # 加载 proxy 环境变量（spark 等墙内机器需要走代理访问 HF/arxiv）
 # 注意：直接 source .bashrc 通常会被 [ -z "$PS1" ] && return 短路退出，
 # 所以用 grep+eval 精确提取 export 行，绕过 interactive 检查
