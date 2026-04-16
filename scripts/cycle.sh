@@ -39,6 +39,13 @@ COUNT=$(wc -l < "$LIST" | tr -d ' ')
 log "📌 got $COUNT papers"
 (( COUNT == 0 )) && { log "🟡 no papers today"; exit 0; }
 
+# 可选：MAX_PAPERS env 限制处理数量（smoke test 用）
+if [[ -n "${MAX_PAPERS:-}" && "$MAX_PAPERS" -lt "$COUNT" ]]; then
+  head -n "$MAX_PAPERS" "$LIST" > "${LIST}.cap" && mv "${LIST}.cap" "$LIST"
+  COUNT="$MAX_PAPERS"
+  log "🔪 capped to $MAX_PAPERS for this run"
+fi
+
 # 2. fetch + process + lint loop
 mkdir -p abstracts drafts rejected
 SUCCESS=0
