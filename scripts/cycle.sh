@@ -7,11 +7,24 @@ set +m  # 规避 Hermes #8340 terminal hang
 # 确保用户工具 PATH（hermes 在 ~/.local/bin，cron / non-login shell 默认拿不到）
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH:-}"
 
-# 加载 proxy 环境变量（spark 等墙内机器需要走代理访问 HF/arxiv）
-# 注意：直接 source .bashrc 通常会被 [ -z "$PS1" ] && return 短路退出，
-# 所以用 grep+eval 精确提取 export 行，绕过 interactive 检查
-if [[ -f ~/.bashrc ]]; then
-  eval "$(grep -E '^[[:space:]]*export[[:space:]]+(HTTPS?_PROXY|NO_PROXY|HF_ENDPOINT)=' ~/.bashrc 2>/dev/null || true)"
+# 加载 proxy 环境变量（墙内机器需走代理访问 HF / arxiv）
+# 优先级：env 已有 > .bashrc/.zshrc 里 export > 自动检测常见代理端口
+if [[ -z "${HTTPS_PROXY:-}" ]]; then
+  # 1. 从 .bashrc / .zshrc 提取（绕过 PS1 interactive guard）
+  for rc in ~/.bashrc ~/.zshrc; do
+    [[ -f "$rc" ]] && eval "$(grep -E '^[[:space:]]*export[[:space:]]+(HTTPS?_PROXY|NO_PROXY|HF_ENDPOINT)=' "$rc" 2>/dev/null || true)"
+  done
+fi
+if [[ -z "${HTTPS_PROXY:-}" ]]; then
+  # 2. 自动检测常见代理端口（privoxy 8119 / clash 7890 / socks5 1080）
+  for candidate in "http://127.0.0.1:8119" "http://127.0.0.1:7890" "socks5://127.0.0.1:1080"; do
+    port="${candidate##*:}"
+    if (echo >/dev/tcp/127.0.0.1/"$port") 2>/dev/null; then
+      export HTTPS_PROXY="$candidate"
+      export HTTP_PROXY="$candidate"
+      break
+    fi
+  done
 fi
 
 WORK_DIR="$(cd "$(dirname "$0")/.." && pwd)"
