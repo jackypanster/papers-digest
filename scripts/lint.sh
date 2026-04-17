@@ -9,7 +9,7 @@ F="${1:?usage: $0 <yaml-file>}"
 failures=()
 
 # Rule 1: 必填字段
-for field in title_zh arxiv_id url verdict why summary tags; do
+for field in title_zh arxiv_id url verdict relevance summary tags; do
   if ! grep -qE "^${field}:" "$F"; then
     failures+=("MISSING-FIELD: $field")
   fi

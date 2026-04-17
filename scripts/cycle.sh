@@ -37,6 +37,11 @@ LOG="$LOG_DIR/cycle.log"
 ts() { date +%Y-%m-%d_%H:%M:%S; }
 log() { printf '[%s] %s\n' "$(ts)" "$*" | tee -a "$LOG"; }
 
+HEARTBEAT="$WORK_DIR/.logs/heartbeat"
+
+# 无论正常退出还是异常退出都写 heartbeat
+trap 'date +%s > "$HEARTBEAT"' EXIT
+
 log "▶️ cycle start"
 
 # 0. 同步 notes 仓

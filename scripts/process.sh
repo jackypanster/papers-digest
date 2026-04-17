@@ -30,7 +30,7 @@ cat > "$TMPFILE" <<PROMPT_EOF
    - skim = 方向有意思但 abstract 已经够用
    - skip = 灌水 / 重复别人工作 / 与我兴趣无关
 3. 提取 3-5 个 tag（英文领域名，例如 LLM, RAG, agent, fine-tuning）
-4. 一句中文说明为什么给这个 verdict（让我快速校准你的判断）
+4. 一句中文说明为什么给这个 verdict（面向第三方读者，说明跟 LLM/agent 工程实践的关系）
 
 # 我的兴趣方向（判 verdict 时优先考虑）
 ${TOPICS}
@@ -57,7 +57,7 @@ title_zh: <中文标题翻译>
 arxiv_id: ${ID}
 url: https://arxiv.org/abs/${ID}
 verdict: read|skim|skip
-why: <一句中文理由>
+relevance: <一句中文理由，说明与 LLM/agent 工程实践的关系>
 summary: |
   <200 字中文摘要>
 tags: [tag1, tag2, tag3]

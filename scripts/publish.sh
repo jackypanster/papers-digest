@@ -69,7 +69,7 @@ emit_section() {
     title_zh="$(grep -E '^title_zh:' "$yaml" | head -1 | sed 's/^title_zh:[[:space:]]*//; s/^"\(.*\)"$/\1/; s/[[:space:]]*$//')"
     title_en="$(grep "^${id}	" "$LIST" | head -1 | cut -f2)"
     : "${title_en:=(no title)}"
-    why="$(grep -E '^why:' "$yaml" | head -1 | sed 's/^why:[[:space:]]*//; s/^"\(.*\)"$/\1/; s/[[:space:]]*$//')"
+    why="$(grep -E '^relevance:' "$yaml" | head -1 | sed 's/^relevance:[[:space:]]*//; s/^"\(.*\)"$/\1/; s/[[:space:]]*$//')"
     tags="$(grep -E '^tags:' "$yaml" | head -1 | sed 's/^tags:[[:space:]]*//; s/[[:space:]]*$//')"
     summary="$(awk '/^summary: \|/{cap=1; next} cap && /^[a-zA-Z_]+:/{exit} cap {print}' "$yaml")"
 
@@ -80,7 +80,7 @@ emit_section() {
       echo ""
       echo "- arxiv: <https://arxiv.org/abs/${id}>"
       echo "- tags: ${tags}"
-      echo "- why: ${why}"
+      echo "- relevance: ${why}"
       echo ""
       echo "${summary}" | sed 's/^[[:space:]]*/  /'
       echo ""
