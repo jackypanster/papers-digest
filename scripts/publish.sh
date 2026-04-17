@@ -88,15 +88,16 @@ emit_section() {
   done
 }
 
-emit_section "READ — 推荐细读" "🔥" "${read_ids[@]}"
-emit_section "SKIM — 翻翻就好" "📑" "${skim_ids[@]}"
-emit_section "SKIP — 跳过" "⏭️" "${skip_ids[@]}"
+# bash 3.2 兼容：空数组展开用 ${arr[@]+"${arr[@]}"} 防 unbound
+emit_section "READ — 推荐细读" "🔥" ${read_ids[@]+"${read_ids[@]}"}
+emit_section "SKIM — 翻翻就好" "📑" ${skim_ids[@]+"${skim_ids[@]}"}
+emit_section "SKIP — 跳过" "⏭️" ${skip_ids[@]+"${skip_ids[@]}"}
 
-if (( ${#failed_ids[@]} > 0 )); then
+if (( ${#failed_ids[@]+${#failed_ids[@]}} > 0 )); then
   {
     echo "## ⚠️ FAILED (${#failed_ids[@]})"
     echo ""
-    for id in "${failed_ids[@]}"; do
+    for id in ${failed_ids[@]+"${failed_ids[@]}"}; do
       _t="$(grep "^${id}	" "$LIST" | head -1 | cut -f2)"; echo "- ${id}: ${_t:-(no title)}"
     done
   } >> "$OUT"
