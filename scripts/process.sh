@@ -80,7 +80,7 @@ hermes chat -Q --yolo --max-turns 1 -q "$(cat "$TMPFILE")" > "$OUT_RAW" 2>&1 || 
 awk '
   BEGIN { arxiv_count = 0 }
   /^╭/ || /^╰/ { next }
-  /^[[:space:]]*session_id:/ { exit }
+  /^[[:space:]]*session_id:/ { next }
   /<<END_OF_DIGEST>>/ { exit }
   /^[[:space:]]*```/ { next }
   /^arxiv_id:/ {
