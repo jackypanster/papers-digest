@@ -93,7 +93,7 @@ emit_section "READ — 推荐细读" "🔥" ${read_ids[@]+"${read_ids[@]}"}
 emit_section "SKIM — 翻翻就好" "📑" ${skim_ids[@]+"${skim_ids[@]}"}
 emit_section "SKIP — 跳过" "⏭️" ${skip_ids[@]+"${skip_ids[@]}"}
 
-if (( ${#failed_ids[@]+${#failed_ids[@]}} > 0 )); then
+if (( ${#failed_ids[@]} > 0 )); then
   {
     echo "## ⚠️ FAILED (${#failed_ids[@]})"
     echo ""
