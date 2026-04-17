@@ -17,10 +17,10 @@ skim_ids=()
 skip_ids=()
 failed_ids=()
 
-declare -A title_map
+# 注意：不用 declare -A（macOS bash 3.2 不支持关联数组）
+# title 查询改用 grep $LIST 文件
 while IFS=$'\t' read -r id title; do
   [[ -z "$id" ]] && continue
-  title_map["$id"]="$title"
   yaml="$WORK_DIR/drafts/${id}.yaml"
   if [[ ! -f "$yaml" ]]; then
     failed_ids+=("$id")
@@ -67,7 +67,8 @@ emit_section() {
     yaml="$WORK_DIR/drafts/${id}.yaml"
     [[ ! -f "$yaml" ]] && continue
     title_zh="$(grep -E '^title_zh:' "$yaml" | head -1 | sed 's/^title_zh:[[:space:]]*//; s/^"\(.*\)"$/\1/; s/[[:space:]]*$//')"
-    title_en="${title_map[$id]:-(no title)}"
+    title_en="$(grep "^${id}	" "$LIST" | head -1 | cut -f2)"
+    : "${title_en:=(no title)}"
     why="$(grep -E '^why:' "$yaml" | head -1 | sed 's/^why:[[:space:]]*//; s/^"\(.*\)"$/\1/; s/[[:space:]]*$//')"
     tags="$(grep -E '^tags:' "$yaml" | head -1 | sed 's/^tags:[[:space:]]*//; s/[[:space:]]*$//')"
     summary="$(awk '/^summary: \|/{cap=1; next} cap && /^[a-zA-Z_]+:/{exit} cap {print}' "$yaml")"
@@ -96,7 +97,7 @@ if (( ${#failed_ids[@]} > 0 )); then
     echo "## ⚠️ FAILED (${#failed_ids[@]})"
     echo ""
     for id in "${failed_ids[@]}"; do
-      echo "- ${id}: ${title_map[$id]:-(no title)}"
+      _t="$(grep "^${id}	" "$LIST" | head -1 | cut -f2)"; echo "- ${id}: ${_t:-(no title)}"
     done
   } >> "$OUT"
 fi
