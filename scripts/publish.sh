@@ -120,6 +120,7 @@ for id in ${read_ids[@]+"${read_ids[@]}"} ${skim_ids[@]+"${skim_ids[@]}"}; do
   p_title_en="$(grep "^${id}	" "$LIST" | head -1 | cut -f2)"
   p_tags="$(grep -E '^tags:' "$yaml" | head -1 | sed 's/^tags:[[:space:]]*//; s/[[:space:]]*$//')"
   p_verdict="$(grep -E '^verdict:' "$yaml" | head -1 | sed 's/^verdict:[[:space:]]*//; s/[[:space:]]*$//')"
+  p_authors="$(grep -E '^authors:' "$yaml" | head -1 | sed 's/^authors:[[:space:]]*//; s/^\"//; s/\"$//; s/[[:space:]]*$//')"
   p_relevance="$(grep -E '^relevance:' "$yaml" | head -1 | sed 's/^relevance:[[:space:]]*//; s/^"//; s/"$//; s/[[:space:]]*$//')"
   p_summary="$(awk '/^summary: \|/{cap=1; next} cap && /^[a-zA-Z_]+:/{exit} cap {print}' "$yaml" | sed 's/^[[:space:]]*//')"
 
@@ -166,6 +167,7 @@ for id in ${read_ids[@]+"${read_ids[@]}"} ${skim_ids[@]+"${skim_ids[@]}"}; do
     echo "> ${p_title_en}"
     echo ""
     echo "- arxiv: <https://arxiv.org/abs/${id}>"
+    echo "- authors: ${p_authors}"
     echo "- verdict: ${p_verdict}"
     echo "- relevance: ${p_relevance}"
     echo ""
