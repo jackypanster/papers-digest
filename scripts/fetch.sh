@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Usage: ./fetch.sh <arxiv_id>
-# stdout: abstract 纯文本（多行）；失败/无内容 → 退出码 1
+# stdout: authors + abstract 纯文本；失败/无内容 → 退出码 1
 set -euo pipefail
 
 ID="${1:?usage: $0 <arxiv_id>    example: $0 2604.14148}"
@@ -13,12 +13,21 @@ if [[ "${HTTPS_PROXY:-}" == socks* ]]; then
   PROXY_ARG=(--socks5-hostname "${P%%/*}")
 fi
 
-# 兼容 macOS bash 3.2（同 pick.sh）
 XML="$(curl ${PROXY_ARG[@]+"${PROXY_ARG[@]}"} -sS --max-time 20 "$URL")"
 [[ -z "$XML" ]] && { echo "ERROR: empty arxiv response for $ID" >&2; exit 1; }
 
-# 必须 https，http 端点偶发 hang
-# 提 <summary>...</summary> 之间的内容（可能跨多行）
+# 提取 authors（逗号分隔）
+AUTHORS="$(echo "$XML" | awk '
+  /<author>/ { inside=1; next }
+  inside && /<name>/ {
+    sub(/.*<name>/, ""); sub(/<\/name>.*/, "")
+    if (a != "") a = a ", "
+    a = a $0; inside=0
+  }
+  END { print a }
+')"
+
+# 提取 abstract
 ABSTRACT="$(echo "$XML" | awk '
   /<summary>/ { sub(/.*<summary>/, ""); inside=1 }
   inside && /<\/summary>/ { sub(/<\/summary>.*/, ""); print; exit }
@@ -30,5 +39,9 @@ if [[ -z "$ABSTRACT" ]]; then
   exit 1
 fi
 
-# 清洗：trim leading/trailing whitespace per line
-echo "$ABSTRACT" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | awk 'NF{p=1} p'
+# 输出格式：authors 行 + 空行 + abstract 正文
+{
+  echo "authors: ${AUTHORS:-unknown}"
+  echo ""
+  echo "$ABSTRACT" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | awk 'NF{p=1} p'
+}
