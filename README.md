@@ -1,6 +1,6 @@
 # papers-digest
 
-> **⚠️ 已退役（2026-04-21）**：本系统于 2026-04-21 被 [my-blog](../my-blog) pipeline v2（`my-blog/scripts/cycle.sh`，commit `53170f9b`）取代后主动下线，cron 条目同日移除，此后本地与 spark 均无实例运行。功能被 v2 完整覆盖且更深（HF Daily → arxiv 全文 → 博客发布 → 评分 → 内网分发）。**2026-08-10 决策：保持退役，不恢复、不追平历史缺口。** 调查结论见 notes `87.38`。本仓库保留作历史参考。
+> **⚠️ 已退役（2026-04-21）**：本系统于 2026-04-21 被 [my-blog](../my-blog) pipeline v2（`my-blog/scripts/cycle.sh`，commit `53170f9b`）取代后主动下线，cron 条目同日移除，此后本地与 spark 均无实例运行。功能被 v2 完整覆盖且更深（HF Daily → arxiv 全文 → 博客发布 → 评分 → 内网分发）。**2026-08-10 决策：保持退役，不恢复、不追平历史缺口。** 调查结论见 notes `87.151`。本仓库保留作历史参考。
 
 每天自动从 [HuggingFace Daily Papers](https://huggingface.co/papers) 拉论文 → Hermes + Gemma4 摘要 + 分类 → 写入 `~/workspace/notes/00 Inbox/papers-YYYY-MM-DD.md`。
 
