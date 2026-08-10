@@ -1,5 +1,7 @@
 # papers-digest
 
+> **⚠️ 已退役（2026-04-21）**：本系统于 2026-04-21 被 [my-blog](../my-blog) pipeline v2（`my-blog/scripts/cycle.sh`，commit `53170f9b`）取代后主动下线，cron 条目同日移除，此后本地与 spark 均无实例运行。功能被 v2 完整覆盖且更深（HF Daily → arxiv 全文 → 博客发布 → 评分 → 内网分发）。**2026-08-10 决策：保持退役，不恢复、不追平历史缺口。** 调查结论见 notes `87.38`。本仓库保留作历史参考。
+
 每天自动从 [HuggingFace Daily Papers](https://huggingface.co/papers) 拉论文 → Hermes + Gemma4 摘要 + 分类 → 写入 `~/workspace/notes/00 Inbox/papers-YYYY-MM-DD.md`。
 
 人在路径之外，纯旁路观察。
@@ -37,16 +39,12 @@ HF Daily → pick.sh (HTML scrape) → arxiv API (fetch.sh) → Hermes+Gemma4 (p
 
 ## 运行
 
-手动触发：
+**已退役，不在任何机器上运行。** 最后一次 cycle 为 2026-04-21 11:01（正常结束，非故障）。历史上的 cron（spark 每日 09:00 + 本地 hourly watchdog）均已随 v2 接管移除；后继系统为 my-blog `scripts/cycle.sh`（本机 hourly cron）。
+
+手动触发（仅调试用，无维护保障）：
 ```bash
 ./scripts/cycle.sh
 ```
-
-cron（spark 上）：
-```cron
-0 1 * * * cd ~/workspace/papers-digest && ./scripts/cycle.sh >> /tmp/papers-cron.log 2>&1
-```
-（每日 UTC 01:00 = 北京 09:00）
 
 ## 配置
 
